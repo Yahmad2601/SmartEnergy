@@ -1,0 +1,161 @@
+{
+  "project": "Smart Energy Management Platform",
+  "description": "A full-stack IoT-enabled energy management web application with real-time monitoring, control, billing, and AI-driven insights. The platform supports block-level energy meters (e.g., ESP32 devices), allows admin to allocate power quotas, students to monitor usage, and integrates RBAC, payments, and notifications. It will be deployed on Vercel and use Supabase as the backend database.",
+  "stack": {
+    "frontend": {
+      "framework": "Next.js 14",
+      "styling": ["Tailwind CSS", "Shadcn/UI"],
+      "features": [
+        "Responsive dashboard for both Admin and Users",
+        "Real-time charts using Recharts or Chart.js",
+        "Authentication UI (login, register, forgot password)",
+        "Dark/light mode toggle"
+      ]
+    },
+    "backend": {
+      "framework": "Next.js API Routes",
+      "realtime": "WebSockets / Supabase Realtime",
+      "database": "Supabase (PostgreSQL)",
+      "auth": "Supabase Auth with RBAC implementation",
+      "integrations": [
+        "Paystack or Flutterwave payment API",
+        "WhatsApp API (Twilio or Meta Cloud)",
+        "OpenAI API or TensorFlow.js for prediction logic"
+      ]
+    },
+    "deployment": {
+      "platform": "Vercel",
+      "env": ["SUPABASE_URL", "SUPABASE_KEY", "PAYMENT_PUBLIC_KEY", "PAYMENT_SECRET_KEY", "WHATSAPP_API_KEY", "OPENAI_API_KEY"]
+    }
+  },
+  "core_features": [
+    {
+      "module": "Authentication & RBAC",
+      "details": {
+        "roles": ["admin", "student"],
+        "admin_permissions": [
+          "Create/manage blocks and lines",
+          "Set monthly quotas",
+          "Disconnect/reconnect rooms",
+          "View all usage data",
+          "Manage payments and alerts"
+        ],
+        "student_permissions": [
+          "View personal usage and quota",
+          "Top-up energy balance",
+          "Receive notifications and alerts",
+          "Chat with AI assistant for energy tips"
+        ]
+      }
+    },
+    {
+      "module": "Real-Time Energy Monitoring",
+      "details": {
+        "data_source": "ESP32 devices per block with current and voltage sensors per line",
+        "protocol": "MQTT or HTTP",
+        "backend_logic": "API endpoint to receive and store readings",
+        "frontend": "Live charts and numeric indicators per line and block"
+      }
+    },
+    {
+      "module": "Energy Quota & Control",
+      "details": {
+        "allocation": "Admin sets monthly energy quota per line",
+        "actions": ["Auto-disconnect when quota reached", "Manual reconnect from dashboard"],
+        "alerts": ["Low balance", "Idle room auto-shutdown after 24h constant usage"],
+        "top_up": "Student can top-up using Paystack or Flutterwave"
+      }
+    },
+    {
+      "module": "AI & Analytics",
+      "details": {
+        "functions": [
+          "Predict exhaustion date based on current usage rate",
+          "Recommend optimal daily usage to stretch quota",
+          "Detect anomalies in consumption patterns",
+          "Send personalized energy tips"
+        ],
+        "implementation": "Simple regression model with OpenAI API or TensorFlow.js"
+      }
+    },
+    {
+      "module": "WhatsApp Chatbot Integration",
+      "details": {
+        "platform": "Twilio WhatsApp API or Meta Cloud API",
+        "capabilities": [
+          "Balance inquiry",
+          "Appliance simulation (e.g., 2000W iron usage impact)",
+          "AI tips and predictions",
+          "Receive auto alerts (low balance, idle disconnection, top-up confirmation)"
+        ]
+      }
+    },
+    {
+      "module": "Notifications & Alerts",
+      "details": {
+        "types": ["Scheduled summaries", "Low balance", "Idle line", "Overload warning", "Top-up confirmation"],
+        "delivery_channels": ["WhatsApp", "Email", "In-app toast/notifications"],
+        "scheduler": "Node-cron jobs or Supabase edge functions"
+      }
+    },
+    {
+      "module": "Admin Dashboard",
+      "details": {
+        "features": [
+          "Manage blocks, lines, and allocations",
+          "View real-time and historical energy data",
+          "Filter by block, line, or time",
+          "Generate monthly reports and analytics",
+          "Trigger remote actions (disconnect/reconnect)"
+        ]
+      }
+    },
+    {
+      "module": "Student Dashboard",
+      "details": {
+        "features": [
+          "View real-time usage and quota",
+          "Check daily/weekly/monthly usage history",
+          "Top up quota",
+          "Receive alerts and AI tips",
+          "Access chatbot or help center"
+        ]
+      }
+    }
+  ],
+  "database_schema": {
+    "tables": {
+      "users": ["id", "email", "password_hash", "role", "block_id", "line_id", "created_at"],
+      "blocks": ["id", "name", "total_quota_kWh"],
+      "lines": ["id", "block_id", "line_number", "current_quota_kWh", "remaining_kWh", "status", "created_at"],
+      "energy_logs": ["id", "line_id", "timestamp", "power_W", "voltage_V", "current_A", "energy_kWh"],
+      "payments": ["id", "user_id", "amount", "units_added_kWh", "status", "reference", "timestamp"],
+      "alerts": ["id", "line_id", "type", "message", "created_at"],
+      "ai_predictions": ["id", "line_id", "predicted_days_left", "recommended_daily_usage_kWh", "created_at"]
+    }
+  },
+  "ai_agent_prompts": {
+    "balance_inquiry": "Tell the user their remaining kWh and estimated exhaustion date based on usage trends.",
+    "appliance_simulation": "Calculate how long the user can use a specific appliance based on power rating and remaining quota.",
+    "tips": "Give personalized energy-saving tips based on their usage pattern.",
+    "alert": "Notify the user if their consumption pattern is abnormal or balance is low."
+  },
+  "extra": {
+    "security": [
+      "JWT-based session handling",
+      "Role-based API protection",
+      "Rate limiting on critical routes"
+    ],
+    "scalability": [
+      "Use Supabase Realtime for live updates",
+      "WebSocket or SSE connections for ESP32 data streaming",
+      "Lazy loading and efficient queries for large datasets"
+    ],
+    "deployment_notes": [
+      "Frontend and backend deployed on Vercel",
+      "Supabase handles database and auth",
+      "Use environment variables for secrets and keys",
+      "Optimize for low-latency real-time updates"
+    ]
+  }
+}
