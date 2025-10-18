@@ -4,7 +4,8 @@ import { useLocation } from "wouter";
 import { LoginForm } from "@/components/auth/login-form";
 import { RegisterForm } from "@/components/auth/register-form";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+// Import the queryClient from your lib
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { LoginInput, RegisterInput } from "@shared/schema";
 
 type AuthMode = "login" | "register";
@@ -17,14 +18,17 @@ export default function AuthPage() {
   const loginMutation = useMutation({
     mutationFn: async (data: LoginInput) => {
       const response = await apiRequest("POST", "/api/auth/login", data);
-      return response;
+      return response.json();
     },
     onSuccess: (data) => {
       toast({
         title: "Success",
         description: "Logged in successfully",
       });
-      
+
+      // THIS IS THE FIX: Invalidate the session query cache
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/session"] });
+
       // Redirect based on role
       if (data?.user?.role === "admin") {
         setLocation("/admin");
@@ -44,14 +48,17 @@ export default function AuthPage() {
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterInput) => {
       const response = await apiRequest("POST", "/api/auth/register", data);
-      return response;
+      return response.json();
     },
     onSuccess: (data) => {
       toast({
         title: "Success",
         description: "Account created successfully",
       });
-      
+
+      // THIS IS THE FIX: Invalidate the session query cache
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/session"] });
+
       // Redirect based on role
       if (data?.user?.role === "admin") {
         setLocation("/admin");

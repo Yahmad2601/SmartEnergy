@@ -2,10 +2,15 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm"; // <-- ADDED 'sql'
 import { db } from "./db";
-import { users, blocks, lines } from "@shared/schema";
-import { authenticateToken, requireRole, generateToken, type AuthRequest } from "./middleware/auth";
+import { users, blocks, lines, energyLogs } from "@shared/schema"; // <-- ADDED 'energyLogs'
+import {
+  authenticateToken,
+  requireRole,
+  generateToken,
+  type AuthRequest,
+} from "./middleware/auth";
 import { loginSchema, registerSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -13,7 +18,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       const validatedData = registerSchema.parse(req.body);
-      
+
       // Check if user already exists
       const existingUser = await db
         .select()
@@ -144,68 +149,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allBlocks = await db.select().from(blocks);
       res.json(allBlocks);
     } catch (error: any) {
-      res.status(500).json({ message: error.message || "Failed to fetch blocks" });
+      res
+        .status(500)
+        .json({ message: error.message || "Failed to fetch blocks" });
     }
   });
 
-  app.post("/api/blocks", authenticateToken, requireRole("admin"), async (req: AuthRequest, res) => {
-    try {
-      const [newBlock] = await db
-        .insert(blocks)
-        .values(req.body)
-        .returning();
-      res.json(newBlock);
-    } catch (error: any) {
-      res.status(400).json({ message: error.message || "Failed to create block" });
+  app.post(
+    "/api/blocks",
+    authenticateToken,
+    requireRole("admin"),
+    async (req: AuthRequest, res) => {
+      try {
+        const [newBlock] = await db.insert(blocks).values(req.body).returning();
+        res.json(newBlock);
+      } catch (error: any) {
+        res
+          .status(400)
+          .json({ message: error.message || "Failed to create block" });
+      }
     }
-  });
+  );
 
   // Line Routes
   app.get("/api/lines", authenticateToken, async (req: AuthRequest, res) => {
     try {
       const { blockId } = req.query;
-      
+
       let query = db.select().from(lines);
-      
+
       if (blockId) {
         query = query.where(eq(lines.blockId, blockId as string));
       }
-      
+
       const allLines = await query;
       res.json(allLines);
     } catch (error: any) {
-      res.status(500).json({ message: error.message || "Failed to fetch lines" });
+      res
+        .status(500)
+        .json({ message: error.message || "Failed to fetch lines" });
     }
   });
 
-  app.post("/api/lines", authenticateToken, requireRole("admin"), async (req: AuthRequest, res) => {
-    try {
-      const [newLine] = await db
-        .insert(lines)
-        .values(req.body)
-        .returning();
-      res.json(newLine);
-    } catch (error: any) {
-      res.status(400).json({ message: error.message || "Failed to create line" });
+  app.post(
+    "/api/lines",
+    authenticateToken,
+    requireRole("admin"),
+    async (req: AuthRequest, res) => {
+      try {
+        const [newLine] = await db.insert(lines).values(req.body).returning();
+        res.json(newLine);
+      } catch (error: any) {
+        res
+          .status(400)
+          .json({ message: error.message || "Failed to create line" });
+      }
     }
-  });
+  );
 
   // User Routes (Admin only)
-  app.get("/api/users", authenticateToken, requireRole("admin"), async (req: AuthRequest, res) => {
+  app.get(
+    "/api/users",
+    authenticateToken,
+    requireRole("admin"),
+    async (req: AuthRequest, res) => {
+      try {
+        const allUsers = await db
+          .select({
+            id: users.id,
+            email: users.email,
+            role: users.role,
+            blockId: users.blockId,
+            lineId: users.lineId,
+            createdAt: users.createdAt,
+          })
+          .from(users);
+        res.json(allUsers);
+      } catch (error: any) {
+        res
+          .status(500)
+          .json({ message: error.message || "Failed to fetch users" });
+      }
+    }
+  );
+
+  // =======================================================
+  // NEW ESP32 IOT ENDPOINT
+  // =======================================================
+  app.post("/api/iot/log", async (req, res) => {
     try {
-      const allUsers = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          role: users.role,
-          blockId: users.blockId,
-          lineId: users.lineId,
-          createdAt: users.createdAt,
+      // In a real-world app, you'd also send a unique secret or API key.
+      // For now, we trust the lineId.
+      const { lineId, powerW, voltageV, currentA, energyKwh } = req.body;
+
+      if (!lineId) {
+        return res.status(400).json({ message: "lineId is required" });
+      }
+
+      const energyToDeduct = parseFloat(energyKwh) || 0;
+
+      // 1. Log the energy data to the energy_logs table
+      await db.insert(energyLogs).values({
+        lineId: lineId,
+        powerW: String(powerW),
+        voltageV: String(voltageV),
+        currentA: String(currentA),
+        energyKwh: String(energyToDeduct),
+      });
+
+      // 2. Atomically update the line's remaining quota and status
+      const [updatedLine] = await db
+        .update(lines)
+        .set({
+          remainingKwh: sql`${lines.remainingKwh} - ${energyToDeduct}`,
+          // Set status to 'disconnected' if quota will be 0 or less
+          status: sql`CASE WHEN ${lines.remainingKwh} - ${energyToDeduct} > 0 THEN 'active' ELSE 'disconnected' END`,
         })
-        .from(users);
-      res.json(allUsers);
+        .where(eq(lines.id, lineId))
+        .returning({
+          remainingKwh: lines.remainingKwh,
+          status: lines.status,
+        });
+
+      if (!updatedLine) {
+        return res.status(404).json({ message: "Line not found" });
+      }
+
+      // 3. Return the new authoritative state to the ESP32
+      res.json({
+        remainingKwh: updatedLine.remainingKwh, // This is a string, e.g., "12.34"
+        status: updatedLine.status, // "active" or "disconnected"
+      });
     } catch (error: any) {
-      res.status(500).json({ message: error.message || "Failed to fetch users" });
+      console.error("IoT Log Error:", error);
+      res.status(500).json({ message: error.message || "Failed to log data" });
     }
   });
 

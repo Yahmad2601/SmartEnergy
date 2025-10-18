@@ -1,3 +1,4 @@
+import "dotenv/config"; // <-- ADD THIS LINE
 import { defineConfig } from "drizzle-kit";
 
 if (!process.env.DATABASE_URL) {
