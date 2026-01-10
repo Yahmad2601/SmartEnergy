@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, decimal, pgEnum, jsonb, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -8,6 +8,9 @@ export const roleEnum = pgEnum("role", ["admin", "student"]);
 export const lineStatusEnum = pgEnum("line_status", ["active", "idle", "disconnected"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["pending", "completed", "failed"]);
 export const alertTypeEnum = pgEnum("alert_type", ["low_balance", "idle_line", "overload", "disconnection", "top_up_confirmation"]);
+export const deviceStatusEnum = pgEnum("device_status", ["online", "offline", "error"]);
+export const controlCommandEnum = pgEnum("control_command", ["disconnect", "reconnect", "reset"]);
+export const controlStatusEnum = pgEnum("control_status", ["pending", "executed", "failed"]);
 
 // Users table
 export const users = pgTable("users", {
@@ -36,7 +39,34 @@ export const lines = pgTable("lines", {
   currentQuotaKwh: decimal("current_quota_kwh", { precision: 10, scale: 2 }).notNull().default("0"),
   remainingKwh: decimal("remaining_kwh", { precision: 10, scale: 2 }).notNull().default("0"),
   status: lineStatusEnum("status").notNull().default("active"),
+  thresholds: jsonb("thresholds").default({
+    maxCurrent: 30,
+    maxPower: 5000,
+    idleLimitHours: 24
+  }),
+  lastUpdate: timestamp("last_update").defaultNow(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Devices table (ESP32 devices)
+export const devices = pgTable("devices", {
+  id: varchar("id", { length: 255 }).primaryKey().default(sql`gen_random_uuid()`),
+  blockId: varchar("block_id", { length: 255 }).references(() => blocks.id).notNull(),
+  deviceToken: text("device_token").notNull().unique(),
+  name: text("name"),
+  status: deviceStatusEnum("status").notNull().default("offline"),
+  registeredAt: timestamp("registered_at").defaultNow().notNull(),
+  lastSeen: timestamp("last_seen"),
+});
+
+// Control Queue table (for ESP32 commands)
+export const controlQueue = pgTable("control_queue", {
+  id: varchar("id", { length: 255 }).primaryKey().default(sql`gen_random_uuid()`),
+  lineId: varchar("line_id", { length: 255 }).references(() => lines.id).notNull(),
+  command: controlCommandEnum("command").notNull(),
+  status: controlStatusEnum("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  executedAt: timestamp("executed_at"),
 });
 
 // Energy logs table
@@ -115,11 +145,19 @@ export const insertAiPredictionSchema = createInsertSchema(aiPredictions, {
   recommendedDailyUsageKwh: z.string().regex(/^\d+\.?\d*$/, "Must be a valid number"),
 }).omit({ id: true, createdAt: true });
 
+export const insertDeviceSchema = createInsertSchema(devices, {
+  deviceToken: z.string().min(16, "Device token must be at least 16 characters"),
+}).omit({ id: true, registeredAt: true, lastSeen: true });
+
+export const insertControlQueueSchema = createInsertSchema(controlQueue).omit({ id: true, createdAt: true, executedAt: true });
+
 // Login/Register schemas
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
+
+export type LoginInput = z.infer<typeof loginSchema>;
 
 export const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -131,6 +169,34 @@ export const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 
+// Device data schema (for ESP32 communication)
+export const deviceDataSchema = z.object({
+  block_id: z.string(),
+  line_id: z.string(),
+  voltage: z.number(),
+  current: z.number(),
+  power: z.number(),
+  energy: z.number(),
+  timestamp: z.string().optional(),
+  device_token: z.string(),
+});
+
+export const deviceHeartbeatSchema = z.object({
+  block_id: z.string(),
+  device_token: z.string(),
+});
+
+export const deviceControlQuerySchema = z.object({
+  block_id: z.string(),
+  line_id: z.string(),
+  device_token: z.string(),
+});
+
+export const adminControlSchema = z.object({
+  line_id: z.string(),
+  command: z.enum(["disconnect", "reconnect", "reset"]),
+});
+
 // Select types
 export type User = typeof users.$inferSelect;
 export type Block = typeof blocks.$inferSelect;
@@ -139,6 +205,8 @@ export type EnergyLog = typeof energyLogs.$inferSelect;
 export type Payment = typeof payments.$inferSelect;
 export type Alert = typeof alerts.$inferSelect;
 export type AiPrediction = typeof aiPredictions.$inferSelect;
+export type Device = typeof devices.$inferSelect;
+export type ControlQueue = typeof controlQueue.$inferSelect;
 
 // Insert types
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -148,5 +216,7 @@ export type InsertEnergyLog = z.infer<typeof insertEnergyLogSchema>;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type InsertAlert = z.infer<typeof insertAlertSchema>;
 export type InsertAiPrediction = z.infer<typeof insertAiPredictionSchema>;
+export type InsertDevice = z.infer<typeof insertDeviceSchema>;
+export type InsertControlQueue = z.infer<typeof insertControlQueueSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;

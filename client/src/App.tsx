@@ -9,7 +9,15 @@ import { ProtectedRoute } from "@/components/auth/protected-route";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import AuthPage from "@/pages/auth";
 import AdminDashboard from "@/pages/admin/dashboard";
+import AdminBlocks from "@/pages/admin/blocks";
+import AdminUsers from "@/pages/admin/users";
+import AdminAnalytics from "@/pages/admin/analytics";
+import AdminAlerts from "@/pages/admin/alerts";
 import StudentDashboard from "@/pages/student/dashboard";
+import StudentUsage from "@/pages/student/usage";
+import StudentTopUp from "@/pages/student/topup";
+import StudentAssistant from "@/pages/student/assistant";
+import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,7 +42,7 @@ function Router() {
       <Route path="/admin/blocks">
         <ProtectedRoute requiredRole="admin">
           <DashboardLayout role="admin">
-            <div className="text-2xl font-bold">Blocks & Lines (Coming Soon)</div>
+            <AdminBlocks />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -42,7 +50,7 @@ function Router() {
       <Route path="/admin/users">
         <ProtectedRoute requiredRole="admin">
           <DashboardLayout role="admin">
-            <div className="text-2xl font-bold">Users (Coming Soon)</div>
+            <AdminUsers />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -50,7 +58,7 @@ function Router() {
       <Route path="/admin/analytics">
         <ProtectedRoute requiredRole="admin">
           <DashboardLayout role="admin">
-            <div className="text-2xl font-bold">Analytics (Coming Soon)</div>
+            <AdminAnalytics />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -58,7 +66,7 @@ function Router() {
       <Route path="/admin/alerts">
         <ProtectedRoute requiredRole="admin">
           <DashboardLayout role="admin">
-            <div className="text-2xl font-bold">Alerts (Coming Soon)</div>
+            <AdminAlerts />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -66,7 +74,7 @@ function Router() {
       <Route path="/admin/settings">
         <ProtectedRoute requiredRole="admin">
           <DashboardLayout role="admin">
-            <div className="text-2xl font-bold">Settings (Coming Soon)</div>
+            <SettingsPage />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -83,7 +91,7 @@ function Router() {
       <Route path="/student/usage">
         <ProtectedRoute requiredRole="student">
           <DashboardLayout role="student">
-            <div className="text-2xl font-bold">Usage (Coming Soon)</div>
+            <StudentUsage />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -91,7 +99,7 @@ function Router() {
       <Route path="/student/topup">
         <ProtectedRoute requiredRole="student">
           <DashboardLayout role="student">
-            <div className="text-2xl font-bold">Top Up (Coming Soon)</div>
+            <StudentTopUp />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -99,7 +107,7 @@ function Router() {
       <Route path="/student/assistant">
         <ProtectedRoute requiredRole="student">
           <DashboardLayout role="student">
-            <div className="text-2xl font-bold">AI Assistant (Coming Soon)</div>
+            <StudentAssistant />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
@@ -107,7 +115,7 @@ function Router() {
       <Route path="/student/settings">
         <ProtectedRoute requiredRole="student">
           <DashboardLayout role="student">
-            <div className="text-2xl font-bold">Settings (Coming Soon)</div>
+            <SettingsPage />
           </DashboardLayout>
         </ProtectedRoute>
       </Route>
