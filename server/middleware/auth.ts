@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
-import { db } from "../db";
+import { db } from "../db.js";
 import { users } from "../../shared/schema.js";
 import type { User } from "../../shared/schema.js";
 

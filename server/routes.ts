@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { eq, sql, and, desc, gte } from "drizzle-orm";
-import { db } from "./db";
+import { db } from "./db.js";
 import { 
   users, 
   blocks, 
