@@ -193,13 +193,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { blockId } = req.query;
 
-      let query = db.select().from(lines);
-
+      let allLines;
       if (blockId) {
-        query = query.where(eq(lines.blockId, blockId as string));
+        allLines = await db.select().from(lines).where(eq(lines.blockId, blockId as string));
+      } else {
+        allLines = await db.select().from(lines);
       }
 
-      const allLines = await query;
       res.json(allLines);
     } catch (error: any) {
       res
@@ -526,13 +526,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { lineId, limit = 50 } = req.query;
       
-      let query = db.select().from(alerts).orderBy(desc(alerts.createdAt)).limit(Number(limit));
-      
+      let allAlerts;
       if (lineId) {
-        query = query.where(eq(alerts.lineId, lineId as string));
+        allAlerts = await db.select().from(alerts).where(eq(alerts.lineId, lineId as string)).orderBy(desc(alerts.createdAt)).limit(Number(limit));
+      } else {
+        allAlerts = await db.select().from(alerts).orderBy(desc(alerts.createdAt)).limit(Number(limit));
       }
       
-      const allAlerts = await query;
       res.json(allAlerts);
     } catch (error: any) {
       res.status(500).json({ message: error.message || "Failed to fetch alerts" });
@@ -547,13 +547,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { lineId, limit = 100 } = req.query;
       
-      let query = db.select().from(energyLogs).orderBy(desc(energyLogs.timestamp)).limit(Number(limit));
-      
+      let logs;
       if (lineId) {
-        query = query.where(eq(energyLogs.lineId, lineId as string));
+        logs = await db.select().from(energyLogs).where(eq(energyLogs.lineId, lineId as string)).orderBy(desc(energyLogs.timestamp)).limit(Number(limit));
+      } else {
+        logs = await db.select().from(energyLogs).orderBy(desc(energyLogs.timestamp)).limit(Number(limit));
       }
       
-      const logs = await query;
       res.json(logs);
     } catch (error: any) {
       res.status(500).json({ message: error.message || "Failed to fetch energy logs" });
