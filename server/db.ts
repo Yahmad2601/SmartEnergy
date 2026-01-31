@@ -1,23 +1,6 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { neonConfig, Pool } from "@neondatabase/serverless";
-import ws from "ws";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "@shared/schema";
-
-// Configure WebSocket for local development
-neonConfig.webSocketConstructor = ws;
-
-// Accept self-signed certificates in development
-neonConfig.fetchOptions = {
-  ...(neonConfig.fetchOptions || {}),
-};
-
-if (process.env.NODE_ENV === "development") {
-  // Disable TLS verification for development (Supabase/Neon often uses self-signed certs in dev)
-  neonConfig.fetchOptions = {
-    ...neonConfig.fetchOptions,
-  };
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -25,5 +8,12 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+// For Supabase connection pooler (Transaction mode on port 6543)
+// Disable prepare for transaction pooler compatibility
+const client = postgres(process.env.DATABASE_URL, {
+  prepare: false,
+  ssl: "require",
+});
+
+export const db = drizzle(client, { schema });
+
