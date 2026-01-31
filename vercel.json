@@ -3,6 +3,11 @@
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist/public",
   "framework": null,
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "server/**,shared/**"
+    }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/" }
