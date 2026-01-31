@@ -14,7 +14,7 @@ import {
   type InsertUser,
   type InsertBlock,
   type InsertLine
-} from "@shared/schema";
+} from "../shared/schema";
 
 export interface IStorage {
   // User operations

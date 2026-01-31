@@ -14,7 +14,7 @@ import {
   alerts, 
   payments,
   aiPredictions 
-} from "@shared/schema";
+} from "../shared/schema";
 import {
   authenticateToken,
   requireRole,
@@ -28,7 +28,7 @@ import {
   deviceHeartbeatSchema,
   deviceControlQuerySchema,
   adminControlSchema
-} from "@shared/schema";
+} from "../shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth Routes
