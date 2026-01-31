@@ -12,3 +12,6 @@ vite.config.ts.*
 
 # Vercel
 .vercel
+
+# Bundled API (built during deploy)
+api/*.mjs
