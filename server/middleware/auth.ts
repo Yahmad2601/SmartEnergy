@@ -2,8 +2,8 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { users } from "../../shared/schema";
-import type { User } from "../../shared/schema";
+import { users } from "../../shared/schema.js";
+import type { User } from "../../shared/schema.js";
 
 const JWT_SECRET = process.env.SESSION_SECRET || "your-secret-key-change-in-production";
 
