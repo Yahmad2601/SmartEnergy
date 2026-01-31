@@ -320,12 +320,17 @@ export default function BlocksPage() {
           const activeLines = blockLines.filter((line) => line.status === "active").length;
 
           return (
-            <Card key={block.id}>
+            <Card key={block.id} className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 transition-all hover:shadow-lg hover:ring-slate-300 dark:hover:ring-slate-700">
+               <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-indigo-500/10 blur-2xl" />
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  {block.name}
-                </CardTitle>
+                <div className="flex items-center gap-3">
+                  <div className="rounded-md bg-indigo-500/10 p-2 text-indigo-500">
+                    <Building2 className="h-5 w-5" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+                    {block.name}
+                  </CardTitle>
+                </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -344,15 +349,15 @@ export default function BlocksPage() {
                 </DropdownMenu>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-4 mt-2">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Total Quota</span>
-                    <span className="font-mono font-medium">{block.totalQuotaKwh} kWh</span>
+                    <span className="font-mono font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{block.totalQuotaKwh} kWh</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Lines</span>
-                    <span className="font-mono font-medium">
-                      {activeLines}/{blockLines.length} active
+                    <span className="font-mono font-medium text-slate-700 dark:text-slate-200">
+                      {activeLines}<span className="text-muted-foreground">/</span>{blockLines.length} active
                     </span>
                   </div>
                 </div>
@@ -361,7 +366,7 @@ export default function BlocksPage() {
           );
         })}
         {blocks.length === 0 && (
-          <Card className="col-span-full">
+          <Card className="col-span-full border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Building2 className="h-12 w-12 text-muted-foreground/30 mb-4" />
               <p className="text-sm text-muted-foreground">No blocks created yet</p>
@@ -374,12 +379,16 @@ export default function BlocksPage() {
       </div>
 
       {/* Lines Table */}
-      <Card>
+      <Card className="relative overflow-hidden border-none shadow-md bg-white dark:bg-slate-950 ring-1 ring-slate-200 dark:ring-slate-800">
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Zap className="h-5 w-5" />
-            All Lines
-          </CardTitle>
+          <div className="flex items-center gap-3">
+             <div className="rounded-md bg-amber-500/10 p-2 text-amber-500">
+               <Zap className="h-5 w-5" />
+             </div>
+             <CardTitle className="text-lg text-slate-900 dark:text-slate-50">
+               All Lines
+             </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           {lines.length > 0 ? (

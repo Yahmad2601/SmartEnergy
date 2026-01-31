@@ -87,13 +87,16 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-blue-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Blocks</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Blocks</CardTitle>
+            <div className="rounded-md bg-blue-500/10 p-2 text-blue-500">
+              <Building2 className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono" data-testid="text-total-blocks">
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50" data-testid="text-total-blocks">
               {stats?.totalBlocks || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -102,13 +105,16 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-emerald-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Lines</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Lines</CardTitle>
+            <div className="rounded-md bg-emerald-500/10 p-2 text-emerald-500">
+              <Zap className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono" data-testid="text-active-lines">
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50" data-testid="text-active-lines">
               {stats?.activeLines || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -117,13 +123,16 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+           <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-violet-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
+            <div className="rounded-md bg-violet-500/10 p-2 text-violet-500">
+              <Users className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono" data-testid="text-total-users">
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50" data-testid="text-total-users">
               {stats?.totalUsers || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -132,13 +141,16 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+           <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-amber-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Alerts</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Alerts</CardTitle>
+            <div className="rounded-md bg-amber-500/10 p-2 text-amber-500">
+              <AlertTriangle className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono" data-testid="text-active-alerts">
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50" data-testid="text-active-alerts">
               {stats?.activeAlerts || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">

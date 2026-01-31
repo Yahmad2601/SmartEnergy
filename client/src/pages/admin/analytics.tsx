@@ -155,48 +155,60 @@ export default function AnalyticsPage() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-emerald-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Consumption</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Consumption</CardTitle>
+            <div className="rounded-md bg-emerald-500/10 p-2 text-emerald-500">
+              <Zap className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono">{totalConsumption.toFixed(2)} kWh</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50">{totalConsumption.toFixed(2)} kWh</div>
             <p className="text-xs text-muted-foreground mt-1">All time</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-violet-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Daily Usage</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Avg. Daily Usage</CardTitle>
+            <div className="rounded-md bg-violet-500/10 p-2 text-violet-500">
+              <Activity className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono">{avgDailyConsumption.toFixed(2)} kWh</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50">{avgDailyConsumption.toFixed(2)} kWh</div>
             <p className="text-xs text-muted-foreground mt-1">Last 7 days</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-blue-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Lines</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Lines</CardTitle>
+            <div className="rounded-md bg-blue-500/10 p-2 text-blue-500">
+              <TrendingUp className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono">{stats?.activeLines || 0}</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50">{stats?.activeLines || 0}</div>
             <p className="text-xs text-muted-foreground mt-1">
               of {stats?.totalLines || 0} total
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-amber-500/10 blur-2xl" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Alerts</CardTitle>
-            <TrendingDown className="h-4 w-4 text-red-500" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Alerts</CardTitle>
+            <div className="rounded-md bg-amber-500/10 p-2 text-amber-500">
+              <TrendingDown className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-mono">{stats?.activeAlerts || 0}</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-50">{stats?.activeAlerts || 0}</div>
             <p className="text-xs text-muted-foreground mt-1">Last 24 hours</p>
           </CardContent>
         </Card>

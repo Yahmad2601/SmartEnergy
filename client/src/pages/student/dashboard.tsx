@@ -123,79 +123,93 @@ export default function StudentDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 translate-y--8 rounded-full bg-emerald-500/10 blur-2xl" />
           <CardHeader>
-            <CardTitle className="text-lg">Energy Quota</CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-emerald-500/10 p-2 text-emerald-500">
+                <Zap className="h-5 w-5" />
+              </div>
+              <CardTitle className="text-lg text-slate-900 dark:text-slate-50">Energy Quota</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 relative">
             {line ? (
               <>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Remaining</span>
-                    <Badge variant="outline" className="font-mono" data-testid="text-remaining-quota">
+                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Remaining</span>
+                    <Badge variant="outline" className="font-mono text-base px-3 py-1 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800" data-testid="text-remaining-quota">
                       {remainingKwh.toFixed(2)} kWh
                     </Badge>
                   </div>
-                  <Progress value={progressPercent} className="h-3" />
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <Progress value={progressPercent} className="h-4 bg-slate-100 dark:bg-slate-800 [&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-emerald-400/80" />
+                  <div className="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
                     <span>{usedKwh.toFixed(2)} kWh used</span>
                     <span>{currentQuotaKwh.toFixed(2)} kWh total</span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t grid grid-cols-2 gap-4">
+                <div className="pt-6 mt-2 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
                   <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5 uppercase tracking-wider font-semibold">
+                      <Calendar className="h-3.5 w-3.5" />
                       Days Remaining
                     </p>
-                    <p className="text-2xl font-bold font-mono" data-testid="text-days-remaining">
+                    <p className="text-3xl font-bold font-mono text-slate-900 dark:text-slate-50" data-testid="text-days-remaining">
                       {prediction?.predictedDaysLeft ?? "--"}
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <TrendingDown className="h-3 w-3" />
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5 uppercase tracking-wider font-semibold">
+                      <TrendingDown className="h-3.5 w-3.5" />
                       Daily Average
                     </p>
-                    <p className="text-2xl font-bold font-mono" data-testid="text-daily-average">
-                      {prediction?.avgDailyUsage ?? "--"} kWh
+                    <p className="text-3xl font-bold font-mono text-slate-900 dark:text-slate-50" data-testid="text-daily-average">
+                      {prediction?.avgDailyUsage ?? "--"} <span className="text-sm font-normal text-muted-foreground">kWh</span>
                     </p>
                   </div>
                 </div>
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-8">
-                <Zap className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                <p className="text-sm text-muted-foreground">Not assigned to a line</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Contact your administrator
+                <div className="rounded-full bg-slate-100 dark:bg-slate-800 p-4 mb-4">
+                  <Zap className="h-8 w-8 text-muted-foreground/50" />
+                </div>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-50">Not assigned to a line</p>
+                <p className="text-xs text-muted-foreground mt-1 text-center max-w-[200px]">
+                  Contact your administrator to get assigned to an energy line.
                 </p>
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="relative overflow-hidden border-none shadow-md bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900 ring-1 ring-slate-200 dark:ring-slate-800">
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-blue-500/10 blur-2xl" />
           <CardHeader>
-            <CardTitle className="text-lg">Current Status</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
+              <div className="rounded-md bg-blue-500/10 p-2 text-blue-500">
+                <Activity className="h-5 w-5" />
+              </div>
+              <CardTitle className="text-lg text-slate-900 dark:text-slate-50">Current Status</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center gap-4 p-3 bg-slate-100/50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
               <div 
-                className={`w-3 h-3 rounded-full ${getStatusColor(line?.status)}`} 
+                className={`w-4 h-4 rounded-full ring-4 ring-white dark:ring-slate-900 shadow-sm ${getStatusColor(line?.status)}`} 
                 data-testid="status-indicator" 
               />
-              <span className="text-sm font-medium capitalize">
+              <span className="text-base font-medium capitalize text-slate-900 dark:text-slate-50">
                 {line?.status || "Not Assigned"}
               </span>
             </div>
             
-            <div className="pt-4 border-t space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Block</span>
-                <span className="text-sm font-medium" data-testid="text-block">
+            <div className="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-4">
+              <div className="flex justify-between items-center group">
+                <span className="text-sm text-muted-foreground group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">Block</span>
+                <span className="text-sm font-semibold text-slate-900 dark:text-slate-50" data-testid="text-block">
                   {block?.name || "--"}
                 </span>
               </div>

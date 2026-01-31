@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -55,26 +56,27 @@ const menuItems = [
 
 export function AdminSidebar({ userEmail, onLogout }: AdminSidebarProps) {
   const [location] = useLocation();
+  const { setOpenMobile, isMobile } = useSidebar();
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-4 border-b">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary">
-            <Zap className="h-5 w-5 text-primary-foreground" />
+      <SidebarHeader className="p-4 border-b bg-sidebar/50 backdrop-blur-sm">
+        <div className="flex items-center gap-3 px-1">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-primary/70 text-primary-foreground shadow-md">
+            <Zap className="h-5 w-5" />
           </div>
-          <div>
-            <h2 className="text-sm font-semibold">Energy Platform</h2>
-            <p className="text-xs text-muted-foreground">Admin Panel</p>
+          <div className="flex flex-col">
+            <span className="text-sm font-bold tracking-tight text-sidebar-foreground">Energy Platform</span>
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Admin Panel</span>
           </div>
         </div>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="px-2 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-2 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
@@ -82,7 +84,7 @@ export function AdminSidebar({ userEmail, onLogout }: AdminSidebarProps) {
                     isActive={location === item.url}
                     data-testid={`link-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                   >
-                    <Link href={item.url}>
+                    <Link href={item.url} onClick={() => isMobile && setOpenMobile(false)}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                     </Link>

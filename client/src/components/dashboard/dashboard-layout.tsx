@@ -57,18 +57,18 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         )}
         
         <div className="flex flex-col flex-1 overflow-hidden">
-          <header className="flex items-center justify-between px-6 py-3 border-b bg-background">
+          <header className="flex items-center justify-between px-4 md:px-6 py-3 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 transition-all duration-200">
             <SidebarTrigger data-testid="button-sidebar-toggle" />
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" data-testid="button-notifications">
+              <Button variant="ghost" size="icon" data-testid="button-notifications" className="rounded-full hover:bg-muted">
                 <Bell className="h-5 w-5" />
               </Button>
               <ThemeToggle />
             </div>
           </header>
           
-          <main className="flex-1 overflow-auto">
-            <div className="max-w-7xl mx-auto px-8 py-6">
+          <main className="flex-1 overflow-auto bg-muted/10">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 fade-in animate-in slide-in-from-bottom-4 duration-500">
               {children}
             </div>
           </main>
