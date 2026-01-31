@@ -38,19 +38,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Register all API routes
-let routesRegistered = false;
-let serverPromise: Promise<void> | null = null;
-
-async function initRoutes() {
-  if (!routesRegistered) {
-    await registerRoutes(app);
-    routesRegistered = true;
-  }
-}
-
-// Initialize routes immediately
-serverPromise = initRoutes();
+// Register all API routes (ignore the returned server, we only need the routes on the app)
+registerRoutes(app);
 
 // Error handling middleware
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -61,18 +50,7 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Export as Vercel serverless function
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Wait for routes to be registered
-  await serverPromise;
-  
+export default function handler(req: VercelRequest, res: VercelResponse) {
   // Handle the request with Express
-  return new Promise<void>((resolve, reject) => {
-    app(req as any, res as any, (err: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  app(req as any, res as any);
 }
