@@ -20,7 +20,7 @@ import {
   requireRole,
   generateToken,
   type AuthRequest,
-} from "./middleware/auth";
+} from "./middleware/auth.js";
 import { 
   loginSchema, 
   registerSchema, 
